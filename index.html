@@ -55,7 +55,7 @@ footer input{flex:1;margin:0;border-radius:22px;padding:11px 14px}
 <div class="chips"><button class="btn" onclick="send('Add new director')">Add new director</button><button class="btn" onclick="send('Update address')">Update address</button></div>
 <div id="lis"><span class="wave spk"><i style="height:8px"></i><i style="height:16px"></i><i style="height:11px"></i><i style="height:18px"></i><i style="height:9px"></i></span><span id="lt">Listening… please speak now</span><button class="btn" onclick="mic()">Stop</button></div><footer><input id="inp" type="text" placeholder="Type a message…" onkeydown="if(event.key==='Enter')send()"><button class="ic" id="mic" title="Voice chat" onclick="mic()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v4M8 22h8"/></svg></button><button class="ic" onclick="send()" title="Send"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4z"/></svg></button></footer>
 </div>
-<div id="ov"><div class="face"></div><div id="ovt">Verifying your face… please look at the camera</div></div>
+<div id="ov"><div class="face"></div><div id="ovt">Reauthentication in progress</div></div>
 <script>
 const $=s=>document.querySelector(s),chat=$('#chat');let fid=0,S={};
 const wait=ms=>new Promise(r=>setTimeout(r,ms));
@@ -157,12 +157,12 @@ async function aNext(v){S.a=v;if(S.types.includes(2)&&['China','Taiwan'].include
   await bot(`We notice the new address is located in ${v.c}. Would you like to add a Chinese address to your Business Integrated Account to ensure seamless delivery of official mail from the Bank?<div class="row"><button class="btn p" onclick="lock(this);user('Yes, add');cnForm()">Yes, add</button><button class="btn" onclick="lock(this);user('No, process');S.z=null;aPrev()">No, process</button></div>`);
  else{S.z=null;aPrev()}}
 async function cnForm(){await bot(renderForm('f'+(++fid),CF,S.z||{},'Next',v=>{S.z=v;aPrev()},'Address in Chinese'),true)}
-async function aPrev(){const a=S.a,rows=[['Apply to',S.types.map(i=>TYPES[i]).join(', ')],['Country / Region',a.c],['Address line 1',a.a1],['Address line 2',a.a2],['Address line 3',a.a3]];
+async function aPrev(){const a=S.a,rows=[['Apply to',S.types.map(i=>TYPES[i]).join(', ')],['Country / Region',a.c],['English address line 1',a.a1],['English address line 2',a.a2],['English address line 3',a.a3]];
  if(S.z)rows.push(['Chinese address 1',S.z.z1],['Chinese address 2',S.z.z2],['Chinese address 3',S.z.z3]);
  await bot(`Please preview the new address(es) below. You may edit if required.${pvHTML(rows)}<div class="decl">By clicking “Submit” you hereby confirm the details of the request are correct.</div><div class="row"><button class="btn" onclick="lock(this);aForm(S.a)">Edit</button><button class="btn p" onclick="lock(this);face()">Submit</button></div>`,true)}
 async function face(){const o=$('#ov');o.style.display='flex';$('#ovt').textContent='Verifying your face… please look at the camera';await wait(3000);$('#ovt').textContent='✔ Verification successful';await wait(900);o.style.display='none';
  await bot('We have successfully made the above change of address update to the Bank’s record.');
- await bot(`Updating to a new address usually comes with new tenancy requirements! Protect your new site, office contents, and leasehold improvements while satisfying landlord requirements with HSBC Commercial Property Insurance. Click the button below to schedule a call with one of our Relationship Managers.<div class="row"><button class="btn p" onclick="lock(this);user('Schedule a call');sched()">Schedule a call</button><button class="btn" onclick="lock(this);user('Not now');more()">Not now</button></div>`)}
+ await bot(`<p>Updating to a new address usually comes with new tenancy requirements! Protect your new site, office contents, and leasehold improvements while satisfying landlord requirements with HSBC Commercial Property Insurance.</p><p>Click the button below to schedule a call with one of our Relationship Managers.</p><div class="row"><button class="btn p" onclick="lock(this);user('Schedule a call');sched()">Schedule a call</button><button class="btn" onclick="lock(this);user('Not now');more()">Not now</button></div>`)}
 async function sched(){await bot('Thank you. A Relationship Manager will contact you shortly to arrange a convenient time.');await more()}
 
 bot('Hello! Welcome to HSBC Business Express. How can I help you today? You can type a message or tap the microphone to talk to me.');
