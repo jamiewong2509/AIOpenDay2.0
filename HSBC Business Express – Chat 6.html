@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>HSBC Business Express – Chat</title>
+<style>
+:root{--red:#db0011;--bg:#fff;--surf:#fff;--tx:#000;--mut:#444;--bd:#cfcfcf;--bot:#fff;--usr:#efefef;--err:#b00020;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+.back{border:0;background:none;color:#000;padding:4px;display:flex}#lis{display:none;align-items:center;gap:10px;padding:10px 18px;border-top:1px solid var(--bd);font-size:13px}#lis .btn{margin-left:auto;padding:5px 14px}.spk i{animation:wv .7s infinite alternate}@keyframes wv{to{transform:scaleY(.35)}}
+*{box-sizing:border-box}html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--tx);font:15px/1.45 "Helvetica Neue",Arial,sans-serif;display:flex;justify-content:center}
+#app{width:100%;max-width:480px;height:100%;display:flex;flex-direction:column;background:var(--bg);border-left:1px solid var(--bd);border-right:1px solid var(--bd)}
+header{background:var(--surf);border-bottom:3px solid var(--red);padding:12px 18px;display:flex;align-items:center;gap:12px}
+.logo{width:34px;height:22px;background:linear-gradient(90deg,var(--red) 50%,var(--surf) 50%);position:relative;border:1px solid var(--red)}
+.logo:before{content:"";position:absolute;left:0;right:0;top:50%;height:0;border-top:11px solid transparent}
+.logo i{position:absolute;inset:0;background:conic-gradient(from 0deg at 50% 50%,var(--red) 0 25%,#fff 0 50%,var(--red) 0 75%,#fff 0)}
+header b{font-size:16px}header small{display:block;color:var(--mut);font-size:12px}
+#chat{flex:1;overflow-y:auto;padding:20px 22px;display:flex;flex-direction:column;gap:10px}
+.m{max-width:88%;padding:10px 13px;border-radius:14px;word-wrap:break-word}
+.bot{align-self:flex-start;background:var(--bot);border:1px solid var(--bd);border-top-left-radius:4px}
+.usr{align-self:flex-end;background:var(--usr);color:#000;border:1px solid var(--bd);border-top-right-radius:4px}
+.bot.wide{width:100%;max-width:100%}
+.opts{display:flex;flex-direction:column;gap:8px;margin-top:10px}
+button{font:inherit;cursor:pointer}
+.btn{border:1px solid var(--red);background:var(--surf);color:var(--red);padding:10px 14px;border-radius:22px;font-weight:600}
+.btn.p{background:var(--red);color:#fff}.btn:disabled{opacity:.45;cursor:default}
+.row{display:flex;gap:8px;margin-top:12px}.row .btn{flex:1}
+label.f{display:block;margin-top:10px;font-size:13px;font-weight:600}
+input[type=text],input[type=date],input[type=email],input[type=tel],select{width:100%;padding:9px;border:1px solid var(--bd);border-radius:8px;background:var(--surf);color:var(--tx);font:inherit;margin-top:4px}
+.ph{display:flex;gap:6px}.ph select{width:38%}.ph input{flex:1}
+input[type=date]{-webkit-appearance:none;appearance:none;display:block;min-width:0;max-width:100%;width:100%;height:40px;line-height:normal;text-align:left}input[type=date]::-webkit-date-and-time-value{text-align:left;min-height:1.2em;margin:0}input[type=date]::-webkit-calendar-picker-indicator{margin:0;padding:0}
+.er{color:var(--err);font-size:12px;min-height:0;margin-top:2px}
+.bad{border-color:var(--err)!important}
+.chk,.rad{display:flex;gap:8px;align-items:flex-start;margin:8px 0}.chk input,.rad input{margin-top:3px;accent-color:var(--red)}
+.pv{margin:8px 0;border:1px solid var(--bd);border-radius:10px;overflow:hidden}
+.pv div{display:flex;gap:8px;padding:7px 10px;border-bottom:1px solid var(--bd);font-size:13px}.pv div:last-child{border:0}
+.pv span{color:var(--mut);width:42%;flex:none}
+.decl{font-size:12px;color:var(--mut);margin-top:8px}
+.voice{display:flex;align-items:center;gap:8px}.voice .pl{background:rgba(128,128,128,.25);border:0;border-radius:50%;width:30px;height:30px;color:inherit}
+.wave{display:flex;gap:2px;align-items:center;height:20px}.wave i{width:3px;background:currentColor;border-radius:2px;opacity:.7}
+.tr{font-size:12px;opacity:.85;margin-top:4px}
+.typing{display:flex;gap:4px;padding:12px}.typing i{width:7px;height:7px;border-radius:50%;background:var(--mut);animation:b 1s infinite}.typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}
+@keyframes b{50%{transform:translateY(-4px);opacity:.4}}
+.chips{display:flex;gap:6px;overflow-x:auto;padding:6px 18px 0}.chips .btn{white-space:nowrap;padding:6px 12px;font-size:13px;font-weight:500}
+footer{display:flex;gap:8px;align-items:center;padding:12px 18px;background:var(--surf);border-top:1px solid var(--bd)}
+footer input{flex:1;margin:0;border-radius:22px;padding:11px 14px}
+.ic{width:42px;height:42px;border-radius:50%;border:0;background:var(--red);color:#fff;font-size:18px;flex:none}
+.ic.rec{animation:pu 1s infinite}@keyframes pu{50%{box-shadow:0 0 0 10px rgba(219,0,17,.25)}}
+#ov{position:fixed;inset:0;background:rgba(0,0,0,.75);display:none;align-items:center;justify-content:center;flex-direction:column;color:#fff;z-index:9;text-align:center;gap:16px}
+#ov .face{width:180px;height:230px;border:4px solid #fff;border-radius:50%;position:relative;overflow:hidden}
+#ov .face:after{content:"";position:absolute;left:0;right:0;height:4px;background:#4cff7a;animation:sc 1.4s linear infinite}
+@keyframes sc{from{top:0}to{top:100%}}
+</style></head>
+<body><div id="app">
+<header><button class="back" aria-label="Back to home"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></button><div><b>Business Express</b><small>Virtual Assistant · HSBC</small></div></header>
+<div id="chat" aria-live="polite"></div>
+<div class="chips"><button class="btn" onclick="send('Add new director')">Add new director</button><button class="btn" onclick="send('Update address')">Update address</button></div>
+<div id="lis"><span class="wave spk"><i style="height:8px"></i><i style="height:16px"></i><i style="height:11px"></i><i style="height:18px"></i><i style="height:9px"></i></span><span id="lt">Listening… please speak now</span><button class="btn" onclick="mic()">Stop</button></div><footer><input id="inp" type="text" placeholder="Type a message…" onkeydown="if(event.key==='Enter')send()"><button class="ic" id="mic" title="Voice chat" onclick="mic()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v4M8 22h8"/></svg></button><button class="ic" onclick="send()" title="Send"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4z"/></svg></button></footer>
+</div>
+<div id="ov"><div class="face"></div><div id="ovt">Verifying your face… please look at the camera</div></div>
+<script>
+const $=s=>document.querySelector(s),chat=$('#chat');let fid=0,S={};
+const wait=ms=>new Promise(r=>setTimeout(r,ms));
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function scroll(){chat.scrollTop=chat.scrollHeight}
+function add(html,cls){const d=document.createElement('div');d.className='m '+cls;d.innerHTML=html;chat.appendChild(d);scroll();return d}
+async function bot(html,wide){const v=VV;VV=false;const t=add('<div class="typing"><i></i><i></i><i></i></div>','bot');await wait(550);t.remove();const d=add(html,'bot'+(wide?' wide':''));
+ if(v){d.insertAdjacentHTML('afterbegin',`<div class="voice">${MI} ${bars()}<small>Voice reply</small></div><div style="height:8px"></div>`);const w=d.querySelector('.wave');w.classList.add('spk');const c=d.cloneNode(true);c.querySelectorAll('.voice,.opts,button,input,select,label,.er').forEach(x=>x.remove());speak(c.textContent.trim(),w)}
+ return d}
+const user=t=>add(esc(t),'usr');
+function lock(el){el.closest('.m').querySelectorAll('button,input,select').forEach(x=>x.disabled=true)}
+function speak(t,el){t=t.replace(/\s*>\s*/g,', then ').replace(/&/g,' and ').replace(/\s\/\s/g,' or ').replace(/[‘’]/g,'');const st=()=>el&&el.classList.remove('spk');try{const u=new SpeechSynthesisUtterance(t);u.lang='en-GB';u.onend=st;u.onerror=st;speechSynthesis.cancel();speechSynthesis.speak(u)}catch(e){st()}setTimeout(st,30000)}
+const bars=()=>'<span class="wave">'+[8,14,10,18,12,16,8,13,9,15].map(h=>`<i style="height:${h}px"></i>`).join('')+'</span>';
+
+/* ---------- Intent routing ---------- */
+function send(txt){const i=$('#inp');const t=(txt??i.value).trim();if(!t)return;i.value='';user(t);route(t)}
+function route(t){const l=t.toLowerCase();
+ if(/reference letter/.test(l))return letter(false);
+ if(/director/.test(l))return j1();
+ if(/address/.test(l))return j2();
+ bot('Sorry, I didn\'t catch that. You can try <b>Add new director</b>, <b>Update address</b>, or ask me about your <b>Bank reference letter</b>.')}
+async function more(){await bot('Is there anything I can help you with today?')}
+
+/* ---------- Voice journey ---------- */
+const LETTER='The Bank reference letter request you have made on 9 Nov 2026 is now available on Business Internet Banking. You may navigate to ‘Services & Support’ > ‘Request for / Download Bank Documents’ > ‘Download Bank Documents’ to view and download the letter.';
+const Q='When will my Bank reference letter be ready?';
+let rec=false,recog=null,heard=false,fb=false,VV=false;
+const MI='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v4M8 22h8"/></svg>';
+function endRec(){rec=false;recog=null;$('#mic').classList.remove('rec');$('#lis').style.display='none'}
+function noMic(){fb=true;recog=null;$('#lt').textContent='Microphone unavailable in this preview. Tap Stop to continue with a sample question.'}
+function mic(){const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+ if(rec){if(recog){try{recog.stop()}catch(e){}}else{endRec();voiceIn(Q)}return}
+ try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(' ');u.volume=0;speechSynthesis.speak(u)}catch(e){}
+ rec=true;heard=false;fb=false;$('#lt').textContent='Listening… please speak now';$('#mic').classList.add('rec');$('#lis').style.display='flex';
+ if(!SR){noMic();return}
+ try{recog=new SR();recog.lang='en-US';recog.onresult=e=>{heard=true;const t=e.results[0][0].transcript;endRec();voiceIn(t)};
+  recog.onerror=()=>{if(!heard)noMic()};
+  recog.onend=()=>{if(rec&&!heard&&!fb){endRec();bot('Sorry, I didn\'t hear anything. Please tap the microphone and try again.')}};
+  recog.start()}catch(e){noMic()}}
+async function voiceIn(t){add(`<div class="voice">${MI} ${bars()}</div><div class="tr">Transcribed: “${esc(t)}”</div>`,'usr');
+ VV=true;route(t)}
+async function letter(){await bot(esc(LETTER));await more()}
+
+/* ---------- Form engine ---------- */
+const F={};
+function renderForm(id,fields,vals,btn,cb,title){F[id]={fields,cb};
+ let h=`<div id="${id}"><b>${title}</b>`;
+ fields.forEach(f=>{const v=vals[f.k]??'';h+=`<label class="f">${f.l}</label>`;
+  if(f.t==='sel')h+=`<select name="${f.k}"><option value="">Select</option>${f.o.map(o=>`<option ${o===v?'selected':''}>${o}</option>`).join('')}</select>`;
+  else if(f.t==='ph')h+=`<div class="ph"><select name="${f.k}_c">${['+852','+86','+853','+886','+44','+1'].map(o=>`<option ${o===(vals[f.k+'_c']||'+852')?'selected':''}>${o}</option>`).join('')}</select><input type="tel" name="${f.k}" inputmode="numeric" maxlength="15" value="${esc(v)}" placeholder="Phone number"></div>`;
+  else if(f.t==='yn')h+=['Yes','No'].map(o=>`<div class="rad"><input type="radio" name="${f.k}" value="${o}" ${v===o?'checked':''}><span>${o}</span></div>`).join('');
+  else h+=`<input type="${f.t||'text'}" name="${f.k}" value="${esc(v)}" maxlength="${f.m||60}" ${f.t==='date'?'max="'+new Date().toISOString().slice(0,10)+'"':''}>`;
+  h+=`<div class="er" data-e="${f.k}"></div>`});
+ return h+`<button class="btn p" style="width:100%;margin-top:14px" onclick="submitForm('${id}',this)">${btn}</button></div>`}
+function submitForm(id,btn){const root=document.getElementById(id),{fields,cb}=F[id];let ok=true,vals={};
+ fields.forEach(f=>{let v;if(f.t==='yn'){const c=root.querySelector(`[name=${f.k}]:checked`);v=c?c.value:''}else v=root.querySelector(`[name=${f.k}]`).value.trim();
+  if(f.t==='ph')vals[f.k+'_c']=root.querySelector(`[name=${f.k}_c]`).value;
+  vals[f.k]=v;let e='';if(!v)e='This field is required.';else if(f.v){e=f.v(v,vals)||''}
+  root.querySelector(`[data-e=${f.k}]`).textContent=e;const el=root.querySelector(`[name=${f.k}]`);el&&el.classList.toggle('bad',!!e);if(e)ok=false});
+ if(ok){lock(btn);cb(vals)}else{const b=root.querySelector('.bad');b&&b.scrollIntoView({block:'center',behavior:'smooth'})}}
+function pvHTML(rows){return '<div class="pv">'+rows.map(([a,b])=>`<div><span>${a}</span><b>${esc(b)}</b></div>`).join('')+'</div>'}
+
+/* ---------- Journey 1: Add new director ---------- */
+const NAT=['Hong Kong SAR','China','Taiwan','Macau SAR','United Kingdom','United States','Singapore','Australia','Canada','India','Other'];
+const phv=v=>/^\d{6,15}$/.test(v)?'':'Enter 6–15 digits, numbers only.';
+const DF=[
+ {k:'title',l:'1) Title',t:'sel',o:['Mr','Mrs','Ms','Miss','Dr']},
+ {k:'name',l:'2) Full name in English',v:v=>/^[A-Za-z][A-Za-z .'\-]{1,59}$/.test(v)?'':'Use English letters, spaces, . \' - only (2–60 characters).'},
+ {k:'idt',l:'3) Identification document type',t:'sel',o:['Hong Kong Identity Card','Passport','Other government-issued ID']},
+ {k:'idn',l:'4) Identification document number',m:20,v:v=>/^[A-Za-z0-9()]{6,20}$/.test(v)?'':'6–20 letters, numbers or brackets, no spaces.'},
+ {k:'dob',l:'5) Date of birth',t:'date',v:v=>{const d=new Date(v),a=(Date.now()-d)/31557600000;return isNaN(d)||a<18||a>100?'Must be aged 18 or above.':''}},
+ {k:'nat',l:'6) Nationality',t:'sel',o:NAT},
+ {k:'mob',l:'7) Mobile telephone number',t:'ph',v:phv},
+ {k:'off',l:'8) Office telephone number',t:'ph',v:phv},
+ {k:'em',l:'9) Email address',t:'email',m:50,v:v=>/^[^\s@]+@[^\s@]+\.[A-Za-z]{2,}$/.test(v)?'':'Enter a valid email address, e.g. name@company.com.'},
+ {k:'mk',l:'10) Does the connected party wish to receive marketing information to the address provided?',t:'yn'}];
+async function j1(){S={};const d=await bot(`Please confirm the role of the new connected person.<div class="opts"><button class="btn" onclick="pickRole(this,'Director only')">1) Director only</button><button class="btn" onclick="pickRole(this,'Director and authorised signatory')">2) Director and authorised signatory</button></div>`)}
+async function pickRole(b,r){lock(b);user(b.textContent);S.role=r;await bot('Please input the details of the new connected person in the fields below.');
+ await dForm({})}
+async function dForm(v){await bot(renderForm('f'+(++fid),DF,v,'Add',dPreview,'New connected person – '+S.role),true)}
+async function dPreview(v){S.v=v;const g=k=>DF.find(f=>f.k===k).l.replace(/^\d+\) /,'');
+ const rows=[['Role',S.role],...DF.map(f=>[f.l.replace(/^\d+\) /,'').replace(/^Does.*/,'Marketing information'),f.t==='ph'?v[f.k+'_c']+' '+v[f.k]:v[f.k]])];
+ await bot(`Please review the details below.${pvHTML(rows)}<div class="decl">By clicking “Submit” you hereby confirm the details are correct and the request have been approved as set out in the Declaration and the Certificate of Due Authorisation.</div><div class="row"><button class="btn" onclick="lock(this);dForm(S.v)">Edit</button><button class="btn p" onclick="lock(this);dDone()">Submit</button></div>`,true)}
+async function dDone(){await bot('The request has been submitted successfully. We have sent an SMS notification to the new connected person. Please remind them to complete the digital identity verification following the instructions in the SMS. Once the verification is completed, we will process your request as soon as possible.');await more()}
+
+/* ---------- Journey 2: Update address ---------- */
+const CTRY=['Hong Kong SAR','China','Taiwan','Macau SAR','Singapore','United Kingdom','United States','Australia','Canada','Other'];
+const enA=v=>/^[A-Za-z0-9 ,.\-\/#&()']{1,35}$/.test(v)?'':'Max 35 characters: English letters, numbers and , . - / # & ( ) only.';
+const AF=[{k:'c',l:'Country / Region',t:'sel',o:CTRY},{k:'a1',l:'Address line 1',m:35,v:enA},{k:'a2',l:'Address line 2',m:35,v:enA},{k:'a3',l:'Address line 3',m:35,v:enA}];
+const CF=['1','2','3'].map(n=>({k:'z'+n,l:'Chinese address line '+n,m:35,v:v=>/[\u4e00-\u9fff]/.test(v)&&/^[\u4e00-\u9fff0-9A-Za-z \-\/#,，、（）()號号樓楼室]{1,35}$/.test(v)?'':'Enter in Chinese characters (max 35).'}));
+const TYPES=['Principal business address','Registered office address','Correspondence address of the account(s) under your company'];
+async function j2(){S={};await bot(`Please confirm the application of the new address.<div id="ck">${TYPES.map((t,i)=>`<label class="chk"><input type="checkbox" value="${i}"><span>${i+1}) ${t}</span></label>`).join('')}<div class="er" id="cke"></div><button class="btn p" style="width:100%;margin-top:8px" onclick="ckGo(this)">Confirm</button></div>`)}
+async function ckGo(b){const box=b.closest('.m'),sel=[...box.querySelectorAll('input:checked')].map(x=>+x.value);
+ if(!sel.length){box.querySelector('#cke').textContent='Please select at least one option.';return}
+ lock(b);S.types=sel;user(sel.map(i=>TYPES[i]).join('; '));await bot('Please select the country / region and enter the new address in the fields below.');
+ await aForm({})}
+async function aForm(v){await bot(renderForm('f'+(++fid),AF,v,'Continue',aNext,'New address'),true)}
+async function aNext(v){S.a=v;if(S.types.includes(2)&&['China','Taiwan'].includes(v.c))
+  await bot(`We notice the new address is located in ${v.c}. Would you like to add a Chinese address to your Business Integrated Account to ensure seamless delivery of official mail from the Bank?<div class="row"><button class="btn p" onclick="lock(this);user('Yes, add');cnForm()">Yes, add</button><button class="btn" onclick="lock(this);user('No, process');S.z=null;aPrev()">No, process</button></div>`);
+ else{S.z=null;aPrev()}}
+async function cnForm(){await bot(renderForm('f'+(++fid),CF,S.z||{},'Next',v=>{S.z=v;aPrev()},'Address in Chinese'),true)}
+async function aPrev(){const a=S.a,rows=[['Apply to',S.types.map(i=>TYPES[i]).join(', ')],['Country / Region',a.c],['Address line 1',a.a1],['Address line 2',a.a2],['Address line 3',a.a3]];
+ if(S.z)rows.push(['Chinese address 1',S.z.z1],['Chinese address 2',S.z.z2],['Chinese address 3',S.z.z3]);
+ await bot(`Please preview the new address(es) below. You may edit if required.${pvHTML(rows)}<div class="decl">By clicking “Submit” you hereby confirm the details of the request are correct.</div><div class="row"><button class="btn" onclick="lock(this);aForm(S.a)">Edit</button><button class="btn p" onclick="lock(this);face()">Submit</button></div>`,true)}
+async function face(){const o=$('#ov');o.style.display='flex';$('#ovt').textContent='Verifying your face… please look at the camera';await wait(3000);$('#ovt').textContent='✔ Verification successful';await wait(900);o.style.display='none';
+ await bot('We have successfully made the above change of address update to the Bank’s record.');
+ await bot(`Updating to a new address usually comes with new tenancy requirements! Protect your new site, office contents, and leasehold improvements while satisfying landlord requirements with HSBC Commercial Property Insurance. Click the button below to schedule a call with one of our Relationship Managers.<div class="row"><button class="btn p" onclick="lock(this);user('Schedule a call');sched()">Schedule a call</button><button class="btn" onclick="lock(this);user('Not now');more()">Not now</button></div>`)}
+async function sched(){await bot('Thank you. A Relationship Manager will contact you shortly to arrange a convenient time.');await more()}
+
+bot('Hello! Welcome to HSBC Business Express. How can I help you today? You can type a message or tap the microphone to talk to me.');
+</script></body></html>
